@@ -7,16 +7,28 @@ const AddUsers = () => {
   // const handleDelete = (userId) => {
     
     // };
-    const RanderPharse = (number) => {
-      return <h1>12 человек тусанет с тобой сегодня</h1>
-      };
 
-  const styleWhite = {
-    color: "white",
-    margin: "8px",
-    borderRadius: '5px',
-    padding: '4px' 
-  }
+const RanderPharse = (number) => {
+  return (
+  <h1 className='badge bg-primary' style={styleMainText}>
+      <span className="badge bg-primary">12</span>человек тусанет с тобой сегодня
+  </h1>)
+};
+const styleMainText = {
+  display: 'flex',
+  width: '28vw',
+  margin: '0 auto',
+  fontSize: '26px',
+  marginBottom: '10px',
+  marginTop: '10px',
+}
+
+const styleWhite = {
+  color: "white",
+  margin: "8px",
+  borderRadius: '5px',
+  padding: '4px' 
+}
 
   const ViewUsersTable = () => {
       return (
@@ -32,6 +44,7 @@ const AddUsers = () => {
                 <td key={el.rate}>{el.rate}</td>
                 <td >
                   <button className={'bg-'+ color} style={styleWhite}>delete</button>
+                  
                 </td>
             </tr>
         </>        
