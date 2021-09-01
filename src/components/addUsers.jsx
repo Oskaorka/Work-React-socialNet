@@ -3,57 +3,68 @@ import api from "../API";
 
 const AddUsers = () => {
   const [users, setUsers] = useState(api.users.fetchAll());
-  let color = users[1].qualities[2].color;
-  // const handleDelete = (userId) => {
-    
-    // };
+  const handleDelete = (userId) => {
+    let newUsers = users.filter(user => {
+      if(user._id !== userId){
+        return user;
 
-const RanderPharse = (number) => {
-  return (
-  <h1 className='badge bg-primary' style={styleMainText}>
-      <span className="badge bg-primary">12</span>человек тусанет с тобой сегодня
-  </h1>)
-};
+      }
+    })
+    setUsers(newUsers);
+  };
+
+    const renderPharse = (number) => {
+      if(number === 0){
+        return (
+          <span className="badge bg-danger">никто с тобой не тусанет</span>
+        )
+      }
+      if(number > 1 && number <5){
+        return (
+          <span className="badge bg-primary">{number} человека тусанут с тобой сегодня</span>
+        )
+      }
+      return (
+        <span className="badge bg-primary">{number} человек тусанет с тобой сегодня</span>
+        )
+      };
+      
 const styleMainText = {
-  display: 'flex',
+  textAlign: 'center',
   width: '28vw',
-  margin: '0 auto',
+  margin: '15px auto',
   fontSize: '26px',
-  marginBottom: '10px',
-  marginTop: '10px',
 }
 
 const styleWhite = {
   color: "white",
   margin: "8px",
   borderRadius: '5px',
-  padding: '4px' 
+  padding: '4px',
+  background: '#DC3545' 
 }
 
   const ViewUsersTable = () => {
       return (
-          users.map(el => 
-          <>
-            <tr>
-                <td key={el.name}>{el.name}</td>
-                <td key={el.profession.name}>{el.profession.name}</td>
-                {el.qualities.length === 1?
-                <td><span style={styleWhite} className={'bg-' + el.qualities[0].color}>{el.qualities[0].name}</span></td>:
-                <td>{el.qualities.map(e => <span style={styleWhite} className={'bg-'+e.color}>{e.name+' '}</span>)}</td>}
-                <td key={el.completedMeetings}>{el.completedMeetings}</td>
-                <td key={el.rate}>{el.rate}</td>
+          users.map(user => 
+            <tr key={user._id} id={user._id}>
+                <td >{user.name}</td>
+                <td >{user.profession.name}</td>
+                {user.qualities.length === 1?
+                <td><span style={styleWhite} className={'bg-' + user.qualities[0].color}>{user.qualities[0].name}</span></td>:
+                <td>{user.qualities.map(e => <span style={styleWhite} className={'bg-' + e.color}>{e.name + ' '}</span>)}</td>}
+                <td >{user.completedMeetings}</td>
+                <td >{user.rate}</td>
                 <td >
-                  <button className={'bg-'+ color} style={styleWhite}>delete</button>
-                  
+                  <button  onClick={() => handleDelete(user._id)} style={styleWhite}>delete</button>
                 </td>
-            </tr>
-        </>        
+            </tr>     
         )
         )
   }
   return (
     <>
-    <RanderPharse/>
+    <h1 style={styleMainText}>{renderPharse(users.length)}</h1>
       <table className="table table-info table-striped table-hover">
         <thead>
           <tr>
@@ -66,7 +77,7 @@ const styleWhite = {
           </tr>
         </thead>
         <tbody>
-          <ViewUsersTable />
+          <ViewUsersTable />  
         </tbody>
       </table>
     </>
