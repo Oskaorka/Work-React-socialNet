@@ -52,7 +52,7 @@ const styleWhite = {
                 <td >{user.profession.name}</td>
                 {user.qualities.length === 1?
                 <td><span style={styleWhite} className={'bg-' + user.qualities[0].color}>{user.qualities[0].name}</span></td>:
-                <td>{user.qualities.map(e => <span style={styleWhite} className={'bg-' + e.color}>{e.name + ' '}</span>)}</td>}
+                <td>{user.qualities.map(e => <span key={e.name} style={styleWhite} className={'bg-' + e.color}>{e.name + ' '}</span>)}</td>}
                 <td >{user.completedMeetings}</td>
                 <td >{user.rate}</td>
                 <td >
@@ -77,7 +77,7 @@ const styleWhite = {
           </tr>
         </thead>
         <tbody>
-          <ViewUsersTable />  
+          {ViewUsersTable()}  
         </tbody>
       </table>
     </>
