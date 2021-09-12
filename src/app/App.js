@@ -5,7 +5,17 @@ import SearchStatus from "./components/searchStatus";
 
 const App = () => {
     const [users, setUsers] = useState(api.users.fetchAll());
-
+    const handleToggleBookMark = (id) => {
+        setUsers(
+            users.filter((user) => {
+                if (user._id === id) {
+                    user.bookmark = !user.bookmark;
+                    return user;
+                }
+                return user;
+            })
+        );
+    };
     const styleMainText = {
         textAlign: "center",
         width: "28vw",
@@ -21,12 +31,7 @@ const App = () => {
         background: "#DC3545"
     };
     const handleDelete = (userId) => {
-        const newUsers = users.filter((user) => {
-            if (user._id !== userId) {
-                return user;
-            }
-            return user;
-        });
+        const newUsers = users.filter((user) => user._id !== userId);
         setUsers(newUsers);
     };
     return (
@@ -39,6 +44,7 @@ const App = () => {
                 handleDelete={handleDelete}
                 styleMainText={styleMainText}
                 styleWhite={styleWhite}
+                onToggleBookMark={handleToggleBookMark}
             />
         </>
     );
