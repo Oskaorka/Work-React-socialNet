@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import api from "./API/index";
 import Users from "./components/users";
-import SearchStatus from "./components/searchStatus";
 
 const App = () => {
-    const [users, setUsers] = useState(api.users.fetchAll());
+    const [users, setUsers] = useState();
+    // setUsers(users.);
+    useEffect(() => {
+        api.users.fetchAll().then((data) => setUsers(data));
+    }, []);
+    // console.log(users);
     const handleToggleBookMark = (id) => {
         setUsers(
             users.filter((user) => {
@@ -36,16 +40,15 @@ const App = () => {
     };
     return (
         <>
-            <h1 style={styleMainText}>
-                <SearchStatus number={users.length} />
-            </h1>
-            <Users
-                users={users}
-                handleDelete={handleDelete}
-                styleMainText={styleMainText}
-                styleWhite={styleWhite}
-                onToggleBookMark={handleToggleBookMark}
-            />
+            {users && (
+                <Users
+                    users={users}
+                    handleDelete={handleDelete}
+                    styleMainText={styleMainText}
+                    styleWhite={styleWhite}
+                    onToggleBookMark={handleToggleBookMark}
+                />
+            )}
         </>
     );
 };
