@@ -13,24 +13,46 @@ module.exports = {
     },
     plugins: ["react"],
     rules: {
-        indent: [
-            "error",
-            4,
-            {
-                offsetTernaryExpressions: true,
-                flatTernaryExpressions: true,
-                ignoredNodes: ["ConditionalExpression"],
-                FunctionExpression: { parameters: "first" },
-                CallExpression: { arguments: "first" },
-                FunctionDeclaration: { parameters: "first" }
-            }
-        ],
+        indent: [0, 4],
         semi: [2, "always"],
         "space-before-function-paren": [
             "error",
-            { anonymous: "always", named: "never" }
+            {
+                anonymous: "always",
+                named: "never"
+            }
         ],
         "multiline-ternary": ["error", "always-multiline"],
         quotes: ["error", "double", { allowTemplateLiterals: true }]
     }
 };
+// module.exports = {
+//     env: {
+//         browser: true,
+//         es2021: true
+//     },
+//     extends: ["plugin:react/recommended", "standard"],
+//     parserOptions: {
+//         ecmaFeatures: {
+//             jsx: true
+//         },
+//         ecmaVersion: 12,
+//         sourceType: "module"
+//     },
+//     plugins: ["react"],
+//     rules: {
+//         semi: [2, "always"],
+//         indent: [0, 4],
+//         "space-before-function-paren": [
+//             "error",
+//             { anonymous: "always", named: "never" }
+//         ],
+//         quotes: [
+//             "error",
+//             "double",
+//             {
+//                 allowTemplateLiterals: true
+//             }
+//         ]
+//     }
+// };
