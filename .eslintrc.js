@@ -22,6 +22,7 @@ module.exports = {
                 named: "never"
             }
         ],
+        // "multiline-ternary": ["error", "always-multiline"],
         "multiline-ternary": ["error", "always-multiline"],
         quotes: ["error", "double", { allowTemplateLiterals: true }]
     }
