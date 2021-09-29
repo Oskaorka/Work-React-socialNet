@@ -1,23 +1,22 @@
 import React from "react";
-// import { Route, Switch } from "react-router";
 import { Route, Switch } from "react-router-dom";
-// import api from "./API/index";
 import Navbar from "./components/navBar";
-import Users from "./layouts/users";
+import UserPage from "./components/userPage";
 import Main from "./layouts/main";
 import Login from "./layouts/login";
-// import UserList from "./components/userList";
 
 const App = () => {
     return (
         <>
             <Navbar />
-            {/* <UserList /> */}
-            {/* <Users />; */}
             <Switch>
+                <Route path="/" exact component={Main} />
                 <Route path="/login" component={Login} />
-                <Route path="/users" component={Users} />
-                <Route path="/" component={Main} />
+                <Route
+                    path="/users/:_id?"
+                    component={UserPage}
+                    render={(props) => <UserPage {...props} />}
+                />
             </Switch>
         </>
     );

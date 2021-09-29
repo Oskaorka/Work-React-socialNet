@@ -18,6 +18,7 @@ const Users = () => {
     useEffect(() => {
         api.users.fetchAll().then((data) => setUsers(data));
     }, []);
+
     const handleToggleBookMark = (id) => {
         setUsers(
             users.filter((user) => {
