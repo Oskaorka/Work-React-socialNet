@@ -21,7 +21,8 @@ const TableBody = ({ data, columns }) => {
         <>
             <tbody>
                 {data.map((item) => (
-                    <tr key={item._id}>
+                    // <tr key={item._id} style={{ background: "tomato" }}>
+                    <tr key={item._id} style={{ background: "#afc0db" }}>
                         {Object.keys(columns).map((column) => (
                             <td style={bright} key={column}>
                                 {renderContent(item, column)}
@@ -35,6 +36,7 @@ const TableBody = ({ data, columns }) => {
 };
 TableBody.propTypes = {
     data: PropTypes.array.isRequired,
+    // date: PropTypes.number.isRequired,
     columns: PropTypes.object.isRequired
 };
 

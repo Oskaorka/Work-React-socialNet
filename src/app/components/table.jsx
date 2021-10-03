@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 
 const Table = ({ onSort, selectedSort, columns, data, children }) => {
     return (
-        <table className="table table-info table-striped table-hover">
+        <table className="table  table-striped table-hover">
             {children || (
                 <>
                     <TableHeader {...{ onSort, selectedSort, columns }} />
