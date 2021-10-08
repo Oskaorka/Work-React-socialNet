@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
-import Pagination from "../components/pagination";
+import Pagination from "./pagination";
 import { paginate } from "../utils/paginate";
-import GroupList from "../components/groupList";
+import GroupList from "./groupList";
 import api from "../API/index";
-import SearchStatus from "../components/searchStatus";
-import UserTable from "../components/usersTable";
+import SearchStatus from "./searchStatus";
+import UserTable from "./usersTable";
 import _ from "lodash";
+import TextField from "./textField";
+// import handleChange
 
 const Users = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfessions] = useState();
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" });
+    const [data, setData] = useState({ search: "" });
     const pageSize = 4;
 
     const [users, setUsers] = useState();
@@ -85,6 +88,25 @@ const Users = () => {
         const clearFilter = () => {
             setSelectedProf();
         };
+        const handleSearch = (e) => {
+            e.preventDefault();
+            const finde = e.target.value.toLowerCase();
+            const findeUser = users.filter((user) =>
+                user.name.toLowerCase().match(data.search)
+                    ? user
+                    : console.log("lol")
+            );
+            setData((prevState) => ({
+                ...prevState,
+                [e.target.name]: finde
+            }));
+            // console.log(rer);
+            setUsers(findeUser);
+            finde === ""
+                ? api.users.fetchAll().then((data) => setUsers(data))
+                : console.log("no");
+            console.log(data);
+        };
         return (
             <div className="d-flex align-items-center justify-content-center">
                 {professions && (
@@ -106,6 +128,13 @@ const Users = () => {
                     <h1 style={styleMainText}>
                         <SearchStatus number={count} />
                     </h1>
+                    <form>
+                        <TextField
+                            name="search"
+                            value={data.search}
+                            onChange={handleSearch}
+                        />
+                    </form>
                     {count > 0 && (
                         <UserTable
                             users={usersCrop}

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import Users from "../layouts/users";
+import Users from "../components/users";
 import { useParams } from "react-router-dom";
 import api from "../API/index";
-import User from "./user";
+import User from "../components/user";
 
 const UserPage = () => {
     const [user, setUser] = useState();
