@@ -6,16 +6,16 @@ import api from "../API/index";
 import SearchStatus from "./searchStatus";
 import UserTable from "./usersTable";
 import _ from "lodash";
-import TextField from "./textField";
-// import handleChange
+// import TextField from "./textField";
+// import SearchElement from "./searchElement";
 
 const Users = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfessions] = useState();
+    const [dataQuery, setDataQuery] = useState("");
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" });
-    const [data, setData] = useState({ search: "" });
-    const pageSize = 4;
+    const pageSize = 8;
 
     const [users, setUsers] = useState();
     useEffect(() => {
@@ -47,6 +47,14 @@ const Users = () => {
         padding: "4px",
         background: "#DC3545"
     };
+    const styleSearchInput = {
+        border: "none",
+        boxShadow: "0px 0px 20px #a1c5ff",
+        borderRadius: "15px",
+        margin: "2em 0",
+        padding: "0.5em 2em"
+        // outlineColor: "#a1c5ff"
+    };
     const handleDelete = (userId) => {
         const newUsers = users.filter((user) => user._id !== userId);
         setUsers(newUsers);
@@ -68,8 +76,38 @@ const Users = () => {
     const handleSort = (item) => {
         setSortBy(item);
     };
+    const handleSearchQuery = (e) => {
+        // preventDefault();
+        setSelectedProf(undefined);
+        setDataQuery(e.target.value);
+        // console.log(e.target.value);
+        // const finde = e.target.value.toLowerCase();
+        // setData((prevState) => ({
+        //     ...prevState,
+        //     [e.target.name]: finde
+        // }));
+        // const findeUser = users.filter((user) =>
+        //     user.name.toLowerCase().match(data.search)
+        //         ? user
+        //         : console.log("lol")
+        // );
+        // // console.log(rer);
+        // setUsers(findeUser);
+        // finde === ""
+        //     ? api.users.fetchAll().then((data) => setUsers(data))
+        //     : console.log("no");
+        // console.log(data);
+    };
     if (users) {
-        const filteredUsers = selectedProf
+        // const filteredUsers = selectedProf;
+        const filteredUsers = dataQuery
+            ? users.filter(
+                  (user) =>
+                      user.name
+                          .toLowerCase()
+                          .indexOf(dataQuery.toLowerCase()) !== -1
+              )
+            : selectedProf
             ? users.filter(
                   (user) =>
                       JSON.stringify(user.profession) ===
@@ -88,25 +126,7 @@ const Users = () => {
         const clearFilter = () => {
             setSelectedProf();
         };
-        const handleSearch = (e) => {
-            e.preventDefault();
-            const finde = e.target.value.toLowerCase();
-            const findeUser = users.filter((user) =>
-                user.name.toLowerCase().match(data.search)
-                    ? user
-                    : console.log("lol")
-            );
-            setData((prevState) => ({
-                ...prevState,
-                [e.target.name]: finde
-            }));
-            // console.log(rer);
-            setUsers(findeUser);
-            finde === ""
-                ? api.users.fetchAll().then((data) => setUsers(data))
-                : console.log("no");
-            console.log(data);
-        };
+
         return (
             <div className="d-flex align-items-center justify-content-center">
                 {professions && (
@@ -128,13 +148,17 @@ const Users = () => {
                     <h1 style={styleMainText}>
                         <SearchStatus number={count} />
                     </h1>
-                    <form>
-                        <TextField
-                            name="search"
-                            value={data.search}
-                            onChange={handleSearch}
-                        />
-                    </form>
+                    {/* <SearchElement
+                        onChange={handleSearchQuery}
+                        data={dataQuery.value}
+                        // users={users}
+                    /> */}
+                    <input
+                        style={styleSearchInput}
+                        type="text"
+                        data={dataQuery.value}
+                        onChange={handleSearchQuery}
+                    />
                     {count > 0 && (
                         <UserTable
                             users={usersCrop}
