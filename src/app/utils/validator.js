@@ -3,10 +3,20 @@ export function validator(data, config) {
     function validate(validateMethod, data, config) {
         let statusValidate;
         switch (validateMethod) {
-            case "isRequired":
-                statusValidate = data.trim() === "";
+            case "isRequired": {
+                if (typeof data === "boolean") {
+                    statusValidate = !data;
+                } else {
+                    statusValidate = data.trim() === "";
+                }
                 // if (data.trim() === "") return config.message;
                 break;
+            }
+            // case "isName": {
+            //     const nameRegExp = /[a-zA-Z]/g;
+            //     statusValidate = !nameRegExp.test(data);
+            //     break;
+            // }
             case "isEmail": {
                 const emailRegExp = /^\S+@\S+\.\S+$/g;
                 statusValidate = !emailRegExp.test(data);

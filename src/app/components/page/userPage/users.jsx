@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Pagination from "./pagination";
-import { paginate } from "../utils/paginate";
-import GroupList from "./groupList";
-import api from "../API/index";
-import SearchStatus from "./searchStatus";
-import UserTable from "./usersTable";
+import Pagination from "../../common/pagination";
+import { paginate } from "../../../utils/paginate";
+import GroupList from "../../common/groupList";
+import api from "../../../API/index";
+import SearchStatus from "../../ui/searchStatus";
+import UserTable from "../../usersTable";
 import _ from "lodash";
-// import TextField from "./textField";
-// import SearchElement from "./searchElement";
 
 const Users = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -52,8 +50,9 @@ const Users = () => {
         boxShadow: "0px 0px 20px #a1c5ff",
         borderRadius: "15px",
         margin: "2em 0",
-        padding: "0.5em 2em"
-        // outlineColor: "#a1c5ff"
+        // outlineColor:"#a1c5ff""
+        padding: "0.5em 2em",
+        outlineColor: "#a1c5ff"
     };
     const handleDelete = (userId) => {
         const newUsers = users.filter((user) => user._id !== userId);

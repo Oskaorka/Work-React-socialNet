@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Bookmark from "./bookmark";
-import QualitiesList from "./qualitiesList";
-import Table from "./table";
-import UserList from "./userList";
+import Bookmark from "./common/bookmark";
+import QualitiesList from "./ui/qualities/qualitiesList";
+import Table from "./common/table/index";
+import UserList from "./page/userListPage/index";
 import TimerCount from "./timerCount";
 
 const UserTable = ({

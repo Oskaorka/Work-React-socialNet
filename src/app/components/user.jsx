@@ -1,13 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import TimerCount from "./timerCount";
-import { useHistory } from "react-router";
-const User = ({ use }) => {
+import { Link } from "react-router-dom";
+const User = ({ use, id }) => {
     const newNum = use.time.split(",");
-    const history = useHistory();
-    const returnAllUsers = () => {
-        history.replace("/users");
-    };
     return (
         <div
             style={{
@@ -78,17 +74,15 @@ const User = ({ use }) => {
             >
                 Сроки {TimerCount(newNum[0], newNum[1], newNum[2])}
             </h3>
-            <button
-                onClick={() => returnAllUsers()}
-                className="btn btn-info m-3"
-            >
-                all users
-            </button>
+            <Link role="button" className="btn btn-info m-3" to={`${id}/edit`}>
+                изменить
+            </Link>
         </div>
     );
 };
 
 User.propTypes = {
-    use: PropTypes.object.isRequired
+    use: PropTypes.object.isRequired,
+    id: PropTypes.string.isRequired
 };
 export default User;
