@@ -1,11 +1,11 @@
 import React from "react";
-import TableHeader from "./tableHeader";
-import TableBody from "./tableBody";
 import PropTypes from "prop-types";
+import TableBody from "./tableBody";
+import TableHeader from "./tableHeader";
 
 const Table = ({ onSort, selectedSort, columns, data, children }) => {
     return (
-        <table className="table  table-striped table-hover">
+        <table className="table">
             {children || (
                 <>
                     <TableHeader {...{ onSort, selectedSort, columns }} />
@@ -16,14 +16,11 @@ const Table = ({ onSort, selectedSort, columns, data, children }) => {
     );
 };
 Table.propTypes = {
-    data: PropTypes.array,
     onSort: PropTypes.func,
     selectedSort: PropTypes.object,
     columns: PropTypes.object,
+    data: PropTypes.array,
     children: PropTypes.array
-    // onToggleBookMark: PropTypes.func.isRequired,
-    // handleDelete: PropTypes.func.isRequired,
-    // styleWhite: PropTypes.object.isRequired
 };
 
 export default Table;

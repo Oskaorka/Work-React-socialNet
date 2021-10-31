@@ -7,7 +7,7 @@ const RadioField = ({ options, name, onChange, value, label }) => {
     return (
         <div className="mb-4">
             <label className="form-label">{label}</label>
-            <div>
+            <div className="">
                 {options.map((option) => (
                     <div
                         key={option.name + "_" + option.value}
@@ -38,7 +38,7 @@ RadioField.propTypes = {
     options: PropTypes.array,
     name: PropTypes.string,
     onChange: PropTypes.func,
-    value: PropTypes.string,
-    label: PropTypes.string
+    label: PropTypes.string,
+    value: PropTypes.string
 };
 export default RadioField;

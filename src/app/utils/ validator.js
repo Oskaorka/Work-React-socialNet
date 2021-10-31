@@ -9,26 +9,21 @@ export function validator(data, config) {
                 } else {
                     statusValidate = data.trim() === "";
                 }
-                // if (data.trim() === "") return config.message;
                 break;
             }
-            // case "isName": {
-            //     const nameRegExp = /[a-zA-Z]/g;
-            //     statusValidate = !nameRegExp.test(data);
-            //     break;
-            // }
             case "isEmail": {
                 const emailRegExp = /^\S+@\S+\.\S+$/g;
                 statusValidate = !emailRegExp.test(data);
-                // const emailRegExp = /^\S+@\S+\.\S+$/g;
-                // if (!emailRegExp.test(data)) return config.message;
+                break;
+            }
+            case "isName": {
+                const nameRegExp = /[A-Z]/g;
+                statusValidate = !nameRegExp.test(data);
                 break;
             }
             case "isCapitalSymbol": {
                 const capitalRegExp = /[A-Z]+/g;
                 statusValidate = !capitalRegExp.test(data);
-                // const capitalRegExp = /[A-Z]+/g;
-                // if (!capitalRegExp.test(data)) return config.message;
                 break;
             }
             case "isContainDigit": {

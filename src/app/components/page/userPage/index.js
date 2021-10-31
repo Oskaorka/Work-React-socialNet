@@ -1,2 +1,2 @@
-import Users from "./users";
-export default Users;
+import UserPage from "./userPage";
+export default UserPage;

@@ -6,7 +6,8 @@ const SelectField = ({
     onChange,
     defaultOption,
     options,
-    error
+    error,
+    name
 }) => {
     const handleChange = ({ target }) => {
         onChange({ name: target.name, value: target.value });
@@ -30,8 +31,8 @@ const SelectField = ({
             <select
                 className={getInputClasses()}
                 id="validationCustom04"
-                name="profession"
                 value={value}
+                name={name}
                 onChange={handleChange}
             >
                 <option disabled value="">
@@ -39,7 +40,7 @@ const SelectField = ({
                 </option>
                 {optionsArray &&
                     optionsArray.map((option) => (
-                        <option value={option.value} key={option.value}>
+                        <option key={option.value} value={option.value}>
                             {option.name}
                         </option>
                     ))}
@@ -49,9 +50,14 @@ const SelectField = ({
     );
 };
 SelectField.propTypes = {
-    defaultOption: PropTypes.string,
     label: PropTypes.string,
-    value: PropTypes.string,
+    name: PropTypes.string,
+    value: PropTypes.oneOfType([
+        PropTypes.object,
+        PropTypes.array,
+        PropTypes.string
+    ]),
+    defaultOption: PropTypes.string,
     onChange: PropTypes.func,
     error: PropTypes.string,
     options: PropTypes.oneOfType([PropTypes.object, PropTypes.array])

@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from "prop-types";
+import ProppTypes from "prop-types";
 const CheckBoxField = ({ name, value, onChange, children, error }) => {
     const handleChange = () => {
         onChange({ name: name, value: !value });
@@ -13,11 +13,11 @@ const CheckBoxField = ({ name, value, onChange, children, error }) => {
                 className={getInputClasses()}
                 type="checkbox"
                 value=""
-                id={name}
                 onChange={handleChange}
+                id={name}
                 checked={value}
             />
-            <label className="form-check-label" htmlFor="flexCheckDefault">
+            <label className="form-check-label" htmlFor={name}>
                 {children}
             </label>
             {error && <div className="invalid-feedback">{error}</div>}
@@ -25,13 +25,13 @@ const CheckBoxField = ({ name, value, onChange, children, error }) => {
     );
 };
 CheckBoxField.propTypes = {
-    name: PropTypes.string,
-    value: PropTypes.bool,
-    error: PropTypes.string,
-    children: PropTypes.oneOfType([
-        PropTypes.arrayOf(PropTypes.node),
-        PropTypes.node
+    name: ProppTypes.string,
+    value: ProppTypes.bool,
+    onChange: ProppTypes.func,
+    children: ProppTypes.oneOfType([
+        ProppTypes.arrayOf(ProppTypes.node),
+        ProppTypes.node
     ]),
-    onChange: PropTypes.func
+    error: ProppTypes.string
 };
 export default CheckBoxField;
