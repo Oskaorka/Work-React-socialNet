@@ -67,9 +67,7 @@ const EditUserPage = ({ id }) => {
                 e.value === qual._id ? data.qualities.push(qual) : null
             )
         );
-        // добавляется в верхнем выражении лишнее(в qualities)
         api.users.update(id, data);
-        // returnAllUsers();
     };
 
     const history = useHistory();
