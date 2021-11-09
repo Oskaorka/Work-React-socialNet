@@ -1,100 +1,47 @@
 import React, { useState, useEffect } from "react";
-import api from "../../api";
-import SelectField from "../common/form/selectField";
-import TextAriaField from "../common/form/textAriaField";
 import PropTypes from "prop-types";
-import CommentUsers from "./commentsUsers";
+import api from "../../api";
+import CommentsUsersList, { AddCommentForm } from "../common/comments";
+import { orderBy } from "lodash";
+
 const Comments = ({ userId }) => {
-    const [getUser, setNewUser] = useState({});
-    const [data, setData] = useState({
-        userId: getUser,
-        pageId: userId,
-        content: ""
-    });
-
-    const [img, setNewImg] = useState(
-        `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
-            .toString(36)
-            .substring(7)}.svg`
-    );
-
-    const [comment, setComment] = useState();
-    const [userComment, setUserComment] = useState();
-
+    const [comments, setComments] = useState();
     useEffect(() => {
-        api.users.fetchAll().then((data) => setNewUser(data));
         api.comments
             .fetchCommentsForUser(userId)
-            .then((data) => setUserComment(data));
-    }, [userComment]);
-    useEffect(() => {
-        api.comments.fetchAll().then((data) => setComment(data));
+            .then((data) => setComments(data));
     }, []);
-    const handleChange = (target) => {
-        setData((prevState) => ({
-            ...prevState,
-            [target.name]: target.value
-        }));
+    const handleSubmit = (data) => {
+        api.comments
+            .add({ ...data, pageId: userId })
+            .then((data) => setComments([...comments, data]));
     };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(img);
-        api.comments.add(data);
-        console.log(userComment);
-        console.log(comment);
-        setNewImg(
-            `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
-                .toString(36)
-                .substring(7)}.svg`
-        );
-        api.comments.fetchAll().then((data) => console.log(data));
+    const handleRemoveComment = (id) => {
+        api.comments.remove(id).then((id) => {
+            setComments(comments.filter((x) => x._id !== id));
+        });
     };
+    const sortedComments = orderBy(comments, ["created_at"], ["desc"]);
 
     return (
         <>
-            <form onSubmit={handleSubmit}>
-                <div className="card mb-2">
-                    <div className="card-body">
-                        {/* <div> */}
-                        <h2>New comment</h2>
-                        <div className="mb-4">
-                            <SelectField
-                                options={getUser}
-                                onChange={handleChange}
-                                defaultOption="выбери пользователя"
-                                name="userId"
-                            />
-                        </div>
-                        <TextAriaField
-                            label="сообщение"
-                            name="content"
-                            onChange={handleChange}
-                            value={data.content}
+            <div className="card mb-2">
+                <div className="card-body">
+                    <AddCommentForm onSubmit={handleSubmit} />
+                </div>
+            </div>
+            {sortedComments.length > 0 && (
+                <div className="card mb-3">
+                    <div className="card-body d-flex flex-column mb-3">
+                        <h2>Comments</h2>
+                        <hr />
+                        <CommentsUsersList
+                            elem={sortedComments}
+                            onRemove={handleRemoveComment}
                         />
-                        {/* </div> */}
-                        <button
-                            type="submit"
-                            className="btn btn-sm bg-primary text-white ms-auto p-2 bd-highlight"
-                        >
-                            Опубликовать
-                        </button>
                     </div>
                 </div>
-            </form>
-            {userComment &&
-                userComment.map(
-                    (elem) =>
-                        elem && (
-                            <div key={elem._id} className="card mb-3">
-                                <CommentUsers
-                                    elem={elem}
-                                    data={data.userId}
-                                    img={img}
-                                />
-                            </div>
-                        )
-                )}
+            )}
         </>
     );
 };

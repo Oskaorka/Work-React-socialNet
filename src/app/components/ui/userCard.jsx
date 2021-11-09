@@ -1,12 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 const UserCard = ({ user }) => {
-    const [img] = useState(
-        `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
-            .toString(36)
-            .substring(7)}.svg`
-    );
     return (
         <div className="card mb-3">
             <div className="card-body">
@@ -39,13 +34,11 @@ const UserCard = ({ user }) => {
     "
                 >
                     <img
-                        // src="https://avatars.dicebear.com/api/avataaars/qweqwdas.svg"
-                        src={img}
-                        // src={`https://avatars.dicebear.com/api/avataaars/${(
-                        //     Math.random() + 1
-                        // )
-                        //     .toString(36)
-                        //     .substring(7)}.svg`}
+                        src={`https://avatars.dicebear.com/api/avataaars/${(
+                            Math.random() + 1
+                        )
+                            .toString(36)
+                            .substring(7)}.svg`}
                         className="rounded-circle"
                         width="150"
                     />

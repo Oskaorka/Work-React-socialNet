@@ -1,31 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import api from "../../api";
-const CommentUsers = ({ elem, img }) => {
-    const [time] = useState(
-        Math.floor((Date.parse(new Date()) - elem.created_at) / 1000 / 60) % 60
-    );
+import api from "../../../api";
+import { timesPassed } from "../../../utils/countsTimesPassed";
+const Comment = ({
+    content,
+    created_at: created,
+    _id: id,
+    userId,
+    onRemove
+}) => {
+    const [user, setUser] = useState();
+    const [isLoading, setIsLoading] = useState(false);
+    useEffect(() => {
+        setIsLoading(true);
+        api.users.getById(userId).then((data) => {
+            setUser(data);
+            setIsLoading(false);
+        });
+    }, []);
 
-    const handleChangeDelete = (id) => {
-        // console.log(new Date(1633573058520));
-        return api.comments.remove(id);
-    };
+    // const [time] = useState(
+    //     Math.floor((Date.parse(new Date()) - created) / 1000 / 60) % 60
+    // );
+
     return (
-        <div className="card-body d-flex flex-column mb-3">
-            <h2>Comments{}</h2>
-            <hr />
-            <div className="bg-light card-body mb-3">
-                <div className="row">
+        <div className="bg-light card-body mb-3">
+            <div className="row">
+                {isLoading ? (
+                    "Loading ..."
+                ) : (
                     <div className="col">
                         <div className="d-flex flex-start">
                             <img
-                                // src={`https://avatars.dicebear.com/api/avataaars/${(
-                                //     Math.random() + 1
-                                // )
-                                //     .toString(36)
-                                //     .substring(7)}.svg`}
-                                // src="https://avatars.dicebear.com/api/avataaars/qweqasdas.svg"
-                                src={img}
+                                src={`https://avatars.dicebear.com/api/avataaars/${(
+                                    Math.random() + 1
+                                )
+                                    .toString(36)
+                                    .substring(7)}.svg`}
                                 className="
                             rounded-circle
                             shadow-1-strong
@@ -49,21 +60,16 @@ const CommentUsers = ({ elem, img }) => {
                                 "
                                     >
                                         <p className="mb-1">
-                                            {elem.userId === {}
-                                                ? (elem.userId = "name")
-                                                : elem.userId}
-                                            {/* {data.userId} */}
-                                            {/* {elem.userId} */}
+                                            {user && user.name}
                                             <span className="small">
                                                 &nbsp;
-                                                {time}
-                                                &nbsp; минут назад
+                                                {/* {created} */}
+                                                оставил коментарий &nbsp;
+                                                {timesPassed(created)} назад
                                             </span>
                                         </p>
                                         <button
-                                            onClick={() =>
-                                                handleChangeDelete(elem._id)
-                                            }
+                                            onClick={() => onRemove(id)}
                                             type="button"
                                             className="
                                                 btn btn-sm
@@ -79,20 +85,22 @@ const CommentUsers = ({ elem, img }) => {
                                             ></i>
                                         </button>
                                     </div>
-                                    <p className="small mb-0">{elem.content}</p>
+                                    <p className="small mb-0">{content}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                )}
             </div>
         </div>
     );
 };
-CommentUsers.propTypes = {
-    elem: PropTypes.object,
-    // content: PropTypes.string,
-    // data: PropTypes.string,
-    img: PropTypes.string
+Comment.propTypes = {
+    content: PropTypes.string,
+    edited_at: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    created_at: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    userId: PropTypes.string,
+    onRemove: PropTypes.func,
+    _id: PropTypes.string
 };
-export default CommentUsers;
+export default Comment;
