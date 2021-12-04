@@ -145,5 +145,5 @@ export function timesPassed(time) {
     if (findeNum(arrMinTwo, minutes) === true) {
         return `${days} дней ${hours} часов ${minutes} минуты`;
     }
-    return `${days} дней ${hours} часа ${minutes} минут`;
+    return `${days} дней ${hours} часов ${minutes} минут`;
 }
