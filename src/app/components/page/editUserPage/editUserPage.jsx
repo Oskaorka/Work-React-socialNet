@@ -1,121 +1,104 @@
 import React, { useEffect, useState } from "react";
-import { validator } from "../../../utils/ validator";
+import { useParams } from "react-router-dom";
+import { validator } from "../../../utils/validator";
+
 import TextField from "../../common/form/textField";
 import SelectField from "../../common/form/selectField";
-import RadioField from "../../common/form/radioField";
-import MultiSelectField from "../../common/form/MultiSelectField";
-import { useHistory, useParams } from "react-router-dom";
-import PropTypes from "prop-types";
-import api from "../../../api";
+import RadioField from "../../common/form/radio.Field";
+import MultiSelectField from "../../common/form/multiSelectField";
+import BackHistoryButton from "../../common/backButton";
+import { useQualities } from "../../../hooks/useQualities";
+import { useProfessions } from "../../../hooks/useProfession";
+import { useAuth } from "../../../hooks/useAuth";
 
 const EditUserPage = () => {
     const { userId } = useParams();
+    const { updateUser, currentUser } = useAuth();
+    const { qualities } = useQualities();
+    const { professions } = useProfessions();
+
     const [data, setData] = useState({
+        name: "",
         email: "",
-        password: "",
         profession: "",
         sex: "male",
+        licence: true,
+        image: `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
+            .toString(36)
+            .substring(7)}.svg`,
+        rate: randomInt(1, 5),
+        completedMeetings: randomInt(0, 200),
         qualities: []
     });
-    const [isLoading, setIsLoading] = useState(false);
-    const [qualities, setQualities] = useState({});
-    const [professions, setProfession] = useState([]);
+    function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+
     const [errors, setErrors] = useState({});
-    const getProfessionById = (id) => {
-        for (const prof in professions) {
-            const profData = professions[prof];
-            if (profData._id === id) return profData;
-        }
-    };
+
     const getQualities = (elements) => {
         const qualitiesQrray = [];
         for (const elem of elements) {
             for (const qualy in qualities) {
                 if (elem.value === qualities[qualy]._id) {
-                    qualitiesQrray.push(qualities[qualy]);
+                    qualitiesQrray.push(qualities[qualy]._id);
                 }
             }
         }
         return qualitiesQrray;
-    };
-    const handleChange = (target) => {
-        setData((prevState) => ({
-            ...prevState,
-            [target.name]: target.value
-        }));
-    };
-    const validatorConfog = {
-        name: {
-            isRequired: {
-                message: "Электронная почта обязательна для заполнения"
-            },
-            isName: {
-                message: "Email введен некорректно"
-            }
-        },
-        profession: {
-            isRequired: {
-                message: "Обязательно выберите вашу профессию"
-            }
-        }
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
-        const { profession, qualities } = data;
-        api.users
-            .update(userId, {
-                ...data,
-                profession: getProfessionById(profession),
-                qualities: getQualities(qualities)
-            })
-            .then((data) => history.push(`/users/${data._id}`));
-        console.log(data);
-        history.replace(`/users/${userId}`);
+
+        const newData = {
+            ...data,
+            qualities: getQualities(data.qualities),
+            _id: userId
+        };
+        updateUser(newData);
     };
-    useEffect(() => {
-        setIsLoading(true);
-        api.users.getById(userId).then(({ profession, ...data }) =>
-            setData((prevState) => ({
-                ...prevState,
-                ...data,
-                profession: profession._id
-            }))
-        );
-        api.qualities.fetchAll().then((data) => setQualities(data));
-        api.professions.fetchAll().then((data) => setProfession(data));
-    }, []);
-    useEffect(() => {
-        if (data._id) setIsLoading(false);
-    }, [data]);
-    useEffect(() => {
-        validate();
-    }, [data]);
+    const transformData = (data) => {
+        return data.map((qual) => ({ label: qual.name, value: qual._id }));
+    };
+
+    const validatorConfog = {
+        email: {
+            isRequired: {
+                message: "Электронная почта обязательна для заполнения"
+            },
+            isEmail: {
+                message: "Email введен некорректно"
+            }
+        },
+
+        name: {
+            isRequired: {
+                message: "Введите ваше имя"
+            }
+        }
+    };
+    useEffect(() => validate(), [data]);
+    const handleChange = (target) => {
+        setData((prevState) => ({
+            ...prevState,
+            [target.name]: target.value
+        }));
+    };
     const validate = () => {
         const errors = validator(data, validatorConfog);
         setErrors(errors);
         return Object.keys(errors).length === 0;
     };
     const isValid = Object.keys(errors).length === 0;
-
-    const history = useHistory();
-    const returnAllUsers = () => {
-        history.replace(`/users/${userId}`);
-        // console.log(isLoading);
-    };
     return (
         <div className="container mt-5">
-            <div className="row">
-                <div className="col-md-6 offset-md-3 shadow p-4 position-relative">
-                    <button
-                        className="btn btn-primary my-2 mr-2"
-                        onClick={returnAllUsers}
-                    >
-                        назад
-                    </button>
-                    {!isLoading && Object.keys(professions).length > 0 ? (
+            <BackHistoryButton />
+            {userId === currentUser._id && (
+                <div className="row">
+                    <div className="col-md-6 offset-md-3 shadow p-4">
                         <form onSubmit={handleSubmit}>
                             <TextField
                                 label="Имя"
@@ -132,13 +115,13 @@ const EditUserPage = () => {
                                 error={errors.email}
                             />
                             <SelectField
-                                options={professions}
-                                label="выбери свою профессию"
-                                value={data.profession}
-                                error={errors.profession}
-                                onChange={handleChange}
+                                label="Выбери свою профессию"
                                 defaultOption="Choose..."
                                 name="profession"
+                                options={transformData(professions)}
+                                onChange={handleChange}
+                                value={data.profession}
+                                error={errors.profession}
                             />
                             <RadioField
                                 options={[
@@ -152,29 +135,28 @@ const EditUserPage = () => {
                                 label="Выберите ваш пол"
                             />
                             <MultiSelectField
-                                options={qualities}
+                                defaultValue={data.qualities}
+                                options={transformData(qualities)}
                                 onChange={handleChange}
+                                values
                                 name="qualities"
-                                label="Выберите ваши качества"
+                                label="Выберите ваши качесвта"
                             />
-
                             <button
                                 type="submit"
                                 disabled={!isValid}
                                 className="btn btn-primary w-100 mx-auto"
                             >
-                                Сохранить
+                                Обновить
                             </button>
                         </form>
-                    ) : (
-                        <p className="position-absolute top-50 start-50">
-                            Loading...
-                        </p>
-                    )}
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 };
-EditUserPage.propTypes = { id: PropTypes.string };
+// EditUserPage.propTypes = {
+//     userDataId: PropTypes.string
+// };
 export default EditUserPage;

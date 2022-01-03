@@ -13,6 +13,7 @@ const Login = () => {
             prevState === "register" ? "login" : "register"
         );
     };
+
     return (
         <div className="container mt-5">
             <div className="row">
@@ -24,7 +25,8 @@ const Login = () => {
                             <p>
                                 Already have account?{" "}
                                 <a role="button" onClick={toggleFormType}>
-                                    Sign IN
+                                    {" "}
+                                    Sign In
                                 </a>
                             </p>
                         </>
@@ -35,6 +37,7 @@ const Login = () => {
                             <p>
                                 Dont have account?{" "}
                                 <a role="button" onClick={toggleFormType}>
+                                    {" "}
                                     Sign Up
                                 </a>
                             </p>

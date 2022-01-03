@@ -1,5 +1,5 @@
-export function timesPassed(time) {
-    const t = Date.parse(new Date()) - time;
+export function displayDate(data) {
+    const t = Date.parse(new Date()) - data;
     const days = Math.floor(t / (1000 * 60 * 60 * 24));
     const hours = Math.floor((t / (1000 * 60 * 60)) % 24);
     const minutes = Math.floor((t / 1000 / 60) % 60);

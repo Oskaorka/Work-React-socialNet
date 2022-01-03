@@ -1,49 +1,37 @@
-import React, { useState, useEffect } from "react";
-import { validator } from "../../utils/ validator";
+import React, { useEffect, useState } from "react";
+import { validator } from "../../utils/validator";
 import TextField from "../common/form/textField";
-import CheckBoxField from "../common/form/checkBoxfield";
-import { useLogIn } from "../../hooks/useLogIn";
+import CheckBoxField from "../common/form/checkBoxField";
+import { useAuth } from "../../hooks/useAuth";
 import { useHistory } from "react-router-dom";
 
 const LoginForm = () => {
-    // console.log(process.env);
-    const history = useHistory();
-
     const [data, setData] = useState({
         email: "",
         password: "",
         stayOn: false
     });
-    const { signLogIn } = useLogIn();
+    const history = useHistory();
+    const { logIn } = useAuth();
     const [errors, setErrors] = useState({});
+    const [enterError, setEnterError] = useState(null);
     const handleChange = (target) => {
         setData((prevState) => ({
             ...prevState,
             [target.name]: target.value
         }));
+        setEnterError(null);
     };
-    const validatorConfig = {
+
+    const validatorConfog = {
         email: {
             isRequired: {
                 message: "Электронная почта обязательна для заполнения"
-            },
-            isEmail: {
-                message: "Email введен некорректно"
             }
         },
         password: {
             isRequired: {
-                message: "Пароль обязательна для заполнения"
-            },
-            isCapitalSymbol: {
-                message: "Пароль должен содержать хотя бы одну заглавную букву"
-            },
-            isContainDigit: {
-                message: "Пароль должен содержать хотя бы одно число"
-            },
-            min: {
-                message: "Пароль должен состаять миниму из 8 символов",
-                value: 8
+                message: "Пароль обязателкн для заполнения"
             }
         }
     };
@@ -51,7 +39,7 @@ const LoginForm = () => {
         validate();
     }, [data]);
     const validate = () => {
-        const errors = validator(data, validatorConfig);
+        const errors = validator(data, validatorConfog);
         setErrors(errors);
         return Object.keys(errors).length === 0;
     };
@@ -61,12 +49,16 @@ const LoginForm = () => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
+
         try {
-            console.log(data);
-            await signLogIn(data);
-            history.push("/users");
+            await logIn(data);
+            history.push(
+                history.location.state
+                    ? history.location.state.from.pathname
+                    : "/"
+            );
         } catch (error) {
-            setErrors(error);
+            setEnterError(error.message);
         }
     };
     return (
@@ -91,11 +83,12 @@ const LoginForm = () => {
                 onChange={handleChange}
                 name="stayOn"
             >
-                оставаться в системе
+                Оставаться в системе
             </CheckBoxField>
+            {enterError && <p className="text-danger">{enterError}</p>}
             <button
                 type="submit"
-                disabled={!isValid}
+                disabled={!isValid || enterError}
                 className="btn btn-primary w-100 mx-auto"
             >
                 Submit

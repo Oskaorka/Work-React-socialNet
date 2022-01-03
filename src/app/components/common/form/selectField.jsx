@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+
 const SelectField = ({
     label,
     value,
@@ -15,6 +16,7 @@ const SelectField = ({
     const getInputClasses = () => {
         return "form-select" + (error ? " is-invalid" : "");
     };
+
     const optionsArray =
         !Array.isArray(options) && typeof options === "object"
             ? Object.keys(options).map((optionName) => ({
@@ -31,8 +33,8 @@ const SelectField = ({
             <select
                 className={getInputClasses()}
                 id="validationCustom04"
-                value={value}
                 name={name}
+                value={value}
                 onChange={handleChange}
             >
                 <option disabled value="">
@@ -40,7 +42,7 @@ const SelectField = ({
                 </option>
                 {optionsArray &&
                     optionsArray.map((option) => (
-                        <option key={option.value} value={option.value}>
+                        <option value={option.value} key={option.value}>
                             {option.label}
                         </option>
                     ))}
@@ -50,16 +52,13 @@ const SelectField = ({
     );
 };
 SelectField.propTypes = {
-    label: PropTypes.string,
-    name: PropTypes.string,
-    value: PropTypes.oneOfType([
-        PropTypes.object,
-        PropTypes.array,
-        PropTypes.string
-    ]),
     defaultOption: PropTypes.string,
+    label: PropTypes.string,
+    value: PropTypes.string,
     onChange: PropTypes.func,
     error: PropTypes.string,
-    options: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+    options: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+    name: PropTypes.string
 };
+
 export default SelectField;
