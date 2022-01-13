@@ -22,9 +22,9 @@ const userService = {
 
         return data;
     },
-    updateUser: async (payload) => {
-        const { data } = await httpService.put(
-            userEndpoint + payload._id,
+    update: async (payload) => {
+        const { data } = await httpService.patch(
+            userEndpoint + localStorageService.getUserId(),
             payload
         );
         return data;

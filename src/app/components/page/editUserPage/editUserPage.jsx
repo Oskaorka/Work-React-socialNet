@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { validator } from "../../../utils/validator";
 
 import TextField from "../../common/form/textField";
@@ -7,62 +6,84 @@ import SelectField from "../../common/form/selectField";
 import RadioField from "../../common/form/radio.Field";
 import MultiSelectField from "../../common/form/multiSelectField";
 import BackHistoryButton from "../../common/backButton";
-import { useQualities } from "../../../hooks/useQualities";
-import { useProfessions } from "../../../hooks/useProfession";
-import { useAuth } from "../../../hooks/useAuth";
+import { useSelector, useDispatch } from "react-redux";
+import {
+    getQualities,
+    getQualitiesLoadingStatus
+} from "../../../store/qualities";
+import {
+    getProfessions,
+    getProfessionsLoadingStatus
+} from "../../../store/professions";
+import { getCurrentUserData, updateUser } from "../../../store/users";
 
 const EditUserPage = () => {
-    const { userId } = useParams();
-    const { updateUser, currentUser } = useAuth();
-    const { qualities } = useQualities();
-    const { professions } = useProfessions();
+    const dispatch = useDispatch();
+    const [data, setData] = useState();
+    const [isLoading, setIsLoading] = useState(true);
+    const currentUser = useSelector(getCurrentUserData());
 
-    const [data, setData] = useState({
-        name: "",
-        email: "",
-        profession: "",
-        sex: "male",
-        licence: true,
-        image: `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
-            .toString(36)
-            .substring(7)}.svg`,
-        rate: randomInt(1, 5),
-        completedMeetings: randomInt(0, 200),
-        qualities: []
-    });
-    function randomInt(min, max) {
-        return Math.floor(Math.random() * (max - min + 1) + min);
-    }
-
+    const qualities = useSelector(getQualities());
+    const qualitiesLoading = useSelector(getQualitiesLoadingStatus());
     const [errors, setErrors] = useState({});
-
-    const getQualities = (elements) => {
-        const qualitiesQrray = [];
-        for (const elem of elements) {
-            for (const qualy in qualities) {
-                if (elem.value === qualities[qualy]._id) {
-                    qualitiesQrray.push(qualities[qualy]._id);
-                }
-            }
-        }
-        return qualitiesQrray;
-    };
+    const professions = useSelector(getProfessions());
+    const professionLoading = useSelector(getProfessionsLoadingStatus());
+    const qualitiesList = qualities.map((q) => ({
+        label: q.name,
+        value: q._id
+    }));
+    const professionsList = professions.map((p) => ({
+        label: p.name,
+        value: p._id
+    }));
 
     const handleSubmit = (e) => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
+        dispatch(
+            updateUser({
+                ...data,
+                qualities: data.qualities.map((q) => q.value)
+            })
+        );
+    };
 
-        const newData = {
-            ...data,
-            qualities: getQualities(data.qualities),
-            _id: userId
-        };
-        updateUser(newData);
-    };
+    function getQualitiesListByIds(qualitiesIds) {
+        const qualitiesArray = [];
+        for (const qualId of qualitiesIds) {
+            for (const quality of qualities) {
+                if (quality._id === qualId) {
+                    qualitiesArray.push(quality);
+                    break;
+                }
+            }
+        }
+        return qualitiesArray;
+    }
     const transformData = (data) => {
-        return data.map((qual) => ({ label: qual.name, value: qual._id }));
+        const result = getQualitiesListByIds(data).map((qual) => ({
+            label: qual.name,
+            value: qual._id
+        }));
+
+        return result;
     };
+
+    useEffect(() => {
+        if (!professionLoading && !qualitiesLoading && currentUser && !data) {
+            setData({
+                ...currentUser,
+                qualities: transformData(currentUser.qualities)
+            });
+        }
+    }, [professionLoading, qualitiesLoading, currentUser, data]);
+
+    useEffect(() => {
+        if (data && isLoading) {
+            setIsLoading(false);
+        }
+    }, [data]);
 
     const validatorConfog = {
         email: {
@@ -96,7 +117,7 @@ const EditUserPage = () => {
     return (
         <div className="container mt-5">
             <BackHistoryButton />
-            {userId === currentUser._id && (
+            {!isLoading && Object.keys(professions).length > 0 ? (
                 <div className="row">
                     <div className="col-md-6 offset-md-3 shadow p-4">
                         <form onSubmit={handleSubmit}>
@@ -118,7 +139,7 @@ const EditUserPage = () => {
                                 label="Выбери свою профессию"
                                 defaultOption="Choose..."
                                 name="profession"
-                                options={transformData(professions)}
+                                options={professionsList}
                                 onChange={handleChange}
                                 value={data.profession}
                                 error={errors.profession}
@@ -136,9 +157,8 @@ const EditUserPage = () => {
                             />
                             <MultiSelectField
                                 defaultValue={data.qualities}
-                                options={transformData(qualities)}
+                                options={qualitiesList}
                                 onChange={handleChange}
-                                values
                                 name="qualities"
                                 label="Выберите ваши качесвта"
                             />
@@ -152,11 +172,11 @@ const EditUserPage = () => {
                         </form>
                     </div>
                 </div>
+            ) : (
+                <p className="mt-4"> ... Loading</p>
             )}
         </div>
     );
 };
-// EditUserPage.propTypes = {
-//     userDataId: PropTypes.string
-// };
+
 export default EditUserPage;
