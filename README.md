@@ -1,3 +1,5 @@
+This project developmen for emulation social net.  Im testing then patterns for write React-Jsx & JavaScript
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
